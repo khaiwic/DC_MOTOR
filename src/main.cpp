@@ -19,15 +19,29 @@ void setup(){
     initMotor_A();
     initMotor_B();
 
-    TIMER = timerBegin(1000000);
-    TIMER = timerAttachInterrupt(TIMER, &onTimer);
-    timerAlarm(TIMER, 50000, true, 0);
+    // 1. timerBegin(ID của Timer, Bộ chia Prescaler, Đếm tiến hay lùi)
+    // - Dùng Timer số 0 (ESP32 có 4 timer từ 0 đến 3)
+    // - Bộ chia 80: Ép xung 80MHz / 80 = 1MHz (1 micro-giây/nhịp)
+    // - true: Đếm tiến (count up)
+    TIMER = timerBegin(0, 80, true);
+    
+    // 2. Gắn hàm ngắt (Thêm chữ true ở cuối để ngắt theo sườn tín hiệu)
+    timerAttachInterrupt(TIMER, &onTimer, true);
+    
+    // 3. Đặt báo thức (Dùng hàm timerAlarmWrite thay vì timerAlarm)
+    // - 50000 micro-giây = 50 mili-giây
+    // - true = tự động lặp lại báo thức
+    timerAlarmWrite(TIMER, 50000, true);
+    
+    // 4. Phải có thêm lệnh này để kích hoạt báo thức chạy ngầm
+    timerAlarmEnable(TIMER);
+
     Serial.println("Hệ thống sẵn sàng! Timer đang chạy ngầm...");
 }
 void loop() {
 
     Serial.println("Lệnh: Xe chạy thẳng 60%");
-    target_speed = 1000; 
+    target_speed = 100; 
     delay(5000);
 
     Serial.println("Lệnh: Xe phanh từ từ lại!");
