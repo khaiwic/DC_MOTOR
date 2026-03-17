@@ -2,12 +2,14 @@
 #define MOTOR_H
 #include <Arduino.h>
 
+enum control{
+    left,
+    right,
+    top,
+    back,
+    stop,
+};
 void initMotor_A();
 void initMotor_B();
-void stopMotor();
-void forWard(int speed);
-void backward(int speed);
-void left(int speed);
-void right(int speed);
-void control(int speed);
+void go(control next, int speed);
 #endif
