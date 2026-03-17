@@ -7,7 +7,7 @@ enum control{
     right,
     top,
     back,
-    stop,
+    stop
 };
 void initMotor_A();
 void initMotor_B();

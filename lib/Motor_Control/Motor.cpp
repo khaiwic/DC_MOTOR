@@ -30,7 +30,7 @@ void initMotor_A(){
     ledcAttachPin(pwma, pwma_channel);
 }
 void initMotor_B(){
-    pinMode(inb_2, OUTPUT);
+    pinMode(inb_1, OUTPUT);
     pinMode(inb_2, OUTPUT);
     ledcSetup(pwmb_channel, freq, resolution);
     ledcAttachPin(pwmb, pwmb_channel);
@@ -38,13 +38,17 @@ void initMotor_B(){
 void go(control next, int speed){
     int pwmRight = 0;
     int pwmLeft = 0;
+    if(speed <= 0){
+        ledcWrite(pwma_channel, 0);
+        ledcWrite(pwmb_channel, 0);
+    }
     if(speed >= 100){
         ledcWrite(pwma_channel, 1023);
         ledcWrite(pwmb_channel, 1023);
     }
     else{
         int i = 0; 
-        while(i < NUM_POINTS && speed > speed_percent[i + 1]){
+        while(i < NUM_POINTS - 1 && speed > speed_percent[i + 1]){
             i++;
         }
         pwmRight = map(speed, speed_percent[i], speed_percent[i + 1], pwm_right[i], pwm_right[i + 1]);
